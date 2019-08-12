@@ -127,17 +127,31 @@ function updateUser(req, res){
         res.status(500).send({ message: 'No tienes permisos para actualizar el usuario' });
     } 
 
-    User.findByIdAndUpdate(userId, update, {new:true}, (err, userUpdated) => {
+    User.findOne({email: update.email.toLowerCase()}, (err, user) => {
         if(err){
-            res.status(500).send({ message: 'Error al actualizar usuario' });
+            res.status(500).send({
+                message: 'Error al comprobar el usuario usuario'
+            })
         } else {
-            if(!userUpdated){
-                res.status(404).send({ message: 'No se ha podido actualizar el usuario' });
-            } else {
-                res.status(200).send({ message: 'Usuario actualizado', oldUser: userUpdated });
+            if(user){
+                update.password = user.password;
+                update.role = user.role;
+                User.findByIdAndUpdate(userId, update, {new:true}, (err, userUpdated) => {
+                    if(err){
+                        res.status(500).send({ message: 'Error al actualizar usuario' });
+                    } else {
+                        if(!userUpdated){
+                            res.status(404).send({ message: 'No se ha podido actualizar el usuario' });
+                        } else {
+                            res.status(200).send({ message: 'Usuario actualizado', userUpdated: userUpdated });
+                        }
+                    }
+                });
             }
         }
     });
+
+
 }
 
 function uploadFile(req, res) {
