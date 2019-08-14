@@ -122,11 +122,11 @@ function login(req, res){
 function updateUser(req, res){
     var userId = req.params.id;
     var update = req.body;
-
+    delete update.password;
+    delete update.role;
     if(userId != req.user.sub){
         res.status(500).send({ message: 'No tienes permisos para actualizar el usuario' });
     } 
-
     User.findByIdAndUpdate(userId, update, {new:true}, (err, userUpdated) => {
         if(err){
             res.status(500).send({ message: 'Error al actualizar usuario' });
@@ -134,7 +134,7 @@ function updateUser(req, res){
             if(!userUpdated){
                 res.status(404).send({ message: 'No se ha podido actualizar el usuario' });
             } else {
-                res.status(200).send({ message: 'Usuario actualizado', oldUser: userUpdated });
+                res.status(200).send({ message: 'Usuario actualizado', userUpdated: userUpdated });
             }
         }
     });

@@ -17,6 +17,6 @@ api.get('/animal/getAll', animalController.getAll);
 api.get('/animal/find/:id', animalController.find);
 api.put('/animal/update/:id',[mw_auth.ensureAuth, mw_admin.isAdmin], animalController.update);
 api.post('/animal/uploadFile/:id', [mw_auth.ensureAuth, mw_admin.isAdmin, md_upload], animalController.uploadFile);
-api.post('/animal/getFile/:fileName', animalController.getFile);
+api.get('/animal/getFile/:fileName', animalController.getFile);
 api.delete('/animal/delete/:id', mw_auth.ensureAuth, animalController.deleteAnimal);
 module.exports = api;
